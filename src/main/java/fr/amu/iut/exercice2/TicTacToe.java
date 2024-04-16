@@ -25,6 +25,7 @@ public class TicTacToe extends Application {
         Random random = new Random();
         // objet de GridPane servant de grille de jeu
         GridPane grille = new GridPane();
+        grille.setGridLinesVisible(true);
         grille.setAlignment(Pos.CENTER);
         for (int i = 0; i<9; ++i) {
             int nombre = random.nextInt(3);
