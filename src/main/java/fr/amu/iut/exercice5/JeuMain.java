@@ -5,12 +5,18 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class JeuMain extends Application {
 
     private Scene scene;
     private BorderPane root;
+
+    public static ArrayList<Obstacle> obstacles;
 
     @Override
     public void start(Stage primaryStage) {
@@ -20,13 +26,20 @@ public class JeuMain extends Application {
         //Acteurs du jeu
         Personnage pacman = new Pacman();
         Personnage fantome = new Fantome();
-        // on positionne le fantôme 20 positions vers la droite
-        fantome.setLayoutX(20 * 10);
+        // on positionne le fantôme dans le coin en bas à droite
+        fantome.setLayoutX(48 * 10);
+        fantome.setLayoutY(64 * 10);
+        //obstacles
+        obstacles = new ArrayList<Obstacle>();
+        Obstacle test = new Obstacle(10 * 20, 11 * 20, 4 * 20, 10 * 20, Color.DARKRED);
+        obstacles.add(test);
         //panneau du jeu
         Pane jeu = new Pane();
         jeu.setPrefSize(640, 480);
         jeu.getChildren().add(pacman);
         jeu.getChildren().add(fantome);
+        Iterator<Obstacle> iter = obstacles.iterator();
+        while (iter.hasNext()) jeu.getChildren().add(iter.next());
         root.setCenter(jeu);
         //on construit une scene 640 * 480 pixels
         scene = new Scene(root);
@@ -37,6 +50,8 @@ public class JeuMain extends Application {
         primaryStage.setTitle("... Pac Man ...");
 
         primaryStage.setScene(scene);
+        primaryStage.setHeight(695);
+        primaryStage.setWidth(502);
         primaryStage.show();
     }
 
@@ -56,13 +71,26 @@ public class JeuMain extends Application {
                 case RIGHT:
                     j1.deplacerADroite(scene.getWidth());
                     break;
-                case Z:
-                    //j2...... vers le haut;
+                case UP:
+                    j1.deplacerEnHaut();
                     break;
-
+                case DOWN:
+                    j1.deplacerEnBas(scene.getHeight());
+                    break;
+                case Q:
+                    j2.deplacerAGauche();
+                    break;
+                case D:
+                    j2.deplacerADroite(scene.getWidth());
+                    break;
+                case Z:
+                    j2.deplacerEnHaut();
+                    break;
+                case S:
+                    j2.deplacerEnBas(scene.getHeight());;
+                    break;
             }
-            if (j1.estEnCollision(j2))
-                System.out.println("Collision....");
+            if (j1.estEnCollision(j2)) System.exit(0);
         });
     }
 
