@@ -1,8 +1,11 @@
 package fr.amu.iut.exercice5;
 
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+
+import java.util.Iterator;
 
 class Personnage extends Group {
     protected final static double LARGEUR_MOITIE_PERSONNAGE = 10;
@@ -26,7 +29,9 @@ class Personnage extends Group {
 
         //déplacement <----
         if (getLayoutX() >= LARGEUR_PERSONNAGE) {
+            double coordonneesX = getLayoutX();
             setLayoutX(getLayoutX() - LARGEUR_PERSONNAGE);
+            if (collisionObstacle()) setLayoutX(coordonneesX);
         }
         if (!direction.equals("gauche")) {
             direction = "gauche";
@@ -41,11 +46,14 @@ class Personnage extends Group {
         //    ****
         //déplacement ---->
         if (getLayoutX() < largeurJeu - LARGEUR_PERSONNAGE*2) {
+            double coordonneesX = getLayoutX();
             setLayoutX(getLayoutX() + LARGEUR_PERSONNAGE);
+            if (collisionObstacle()) setLayoutX(coordonneesX);
         }
         if (!direction.equals("droite")) {
             direction = "droite";
         }
+        collisionObstacle();
     }
 
     public void deplacerEnBas(double hauteurJeu) {
@@ -54,7 +62,11 @@ class Personnage extends Group {
         //  *   |   *
         //   *  |  *
         //    *****
-        if (getLayoutY() < hauteurJeu - LARGEUR_PERSONNAGE*2) setLayoutY(getLayoutY() + LARGEUR_PERSONNAGE);
+        if (getLayoutY() < hauteurJeu - LARGEUR_PERSONNAGE*2) {
+            double coordonneesY = getLayoutY();
+            setLayoutY(getLayoutY() + LARGEUR_PERSONNAGE);
+            if (collisionObstacle()) setLayoutY(coordonneesY);
+        }
         if (!direction.equals("bas")) direction = "bas";
     }
 
@@ -64,7 +76,11 @@ class Personnage extends Group {
         //  *   |   *
         //   *     *
         //    *****
-        if (getLayoutY() >= LARGEUR_PERSONNAGE) setLayoutY(getLayoutY() - LARGEUR_PERSONNAGE);
+        if (getLayoutY() >= LARGEUR_PERSONNAGE) {
+            double coordonneesY = getLayoutY();
+            setLayoutY(getLayoutY() - LARGEUR_PERSONNAGE);
+            if (collisionObstacle()) setLayoutY(coordonneesY);
+        }
         if (!direction.equals("haut")) direction = "haut";
     }
 
@@ -73,4 +89,18 @@ class Personnage extends Group {
                 || autrePersonnage.getBoundsInParent().contains(getBoundsInParent());
     }
 
+    public boolean collisionObstacle() {
+        Iterator<Obstacle> it = JeuMain.obstacles.iterator();
+        Bounds coordonneesPersonnage = getBoundsInParent();
+        while(it.hasNext()) {
+            Bounds coordonneesObstcale = it.next().getBoundsInParent();
+            if (coordonneesObstcale.getMinX() <= coordonneesPersonnage.getMinX()
+            && coordonneesObstcale.getMaxX() >= coordonneesPersonnage.getMaxX()
+            && coordonneesObstcale.getMinY() <= coordonneesPersonnage.getMinY()
+            && coordonneesObstcale.getMaxY() >= coordonneesPersonnage.getMaxY()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
