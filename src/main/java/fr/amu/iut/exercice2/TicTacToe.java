@@ -1,18 +1,14 @@
 package fr.amu.iut.exercice2;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import java.util.Random;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class TicTacToe extends Application {
 
@@ -45,17 +41,16 @@ public class TicTacToe extends Application {
 
         // ajout de la grille au conteneur principal
         vBox.getChildren().add(grille);
-        VBox.setMargin(grille, new Insets(5.0));
 
         // création de la scène avec le conteneur principal
         Scene scene = new Scene(vBox);
         // ajout de la scène à Stage
         primaryStage.setScene(scene);
         // paramètrage du Stage
-        primaryStage.setHeight(180);
-        primaryStage.setWidth(139);
+        primaryStage.setHeight(178);
+        primaryStage.setWidth(133);
         primaryStage.setTitle("Tic Tac Toe");
-        primaryStage.initStyle(StageStyle.UTILITY);
+        primaryStage.setResizable(false);
         // affichage de la page
         primaryStage.show();
     }
