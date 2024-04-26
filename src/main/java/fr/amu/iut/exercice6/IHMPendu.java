@@ -23,7 +23,11 @@ import java.util.Arrays;
 public class IHMPendu extends Application {
     // création d'attributs afin de pouvoir les utiliser en dehors de la méthode start
     int nbVies;     // nombre de vies restantes du joueur à chaque instant de la partie
+    int nbVictoires;    // nombre de parties gagnées depuis le dernier lancement de l'application
+    int nbDefaites;     // nombre de parties perdues depuis le dernier lancement de l'application
     Label vie;      // Label affichant le nombre de vies restnates
+    Label victoire; // Label affichant le nombre de victoires
+    Label defaite;  // Label affichant le nombre de défaites
     Label imgPendu;     // Label affichant l'image du pendu et étant mis à jour au cours de la partie
     Label motCache;     // Label affichant le mot à trouver, au départ composé uniquement de *
     Label etatDeJeu;    // Label affichant les différents états du jeu
@@ -37,26 +41,52 @@ public class IHMPendu extends Application {
         // paramétrage de la fenêtre
         primaryStage.setTitle("Jeu du pendu");
         primaryStage.setWidth(500);
-        primaryStage.setHeight(550);
+        primaryStage.setHeight(622);
 
         // initialisation de boutonsUtilises
         boutonsUtilises = new ArrayList<>();
         // initilisation de dico
         dico = new Dico();
+        // initialisation du mot à trouver
+        mot = new StringBuilder(dico.getMot());
+        // initialisation du nombre de vies à 7
+        nbVies = 7;
+        // initialisation du nombre de victoires
+        nbVictoires = 0;
+        // initialisation du nombre de défaites
+        nbDefaites = 0;
 
         // listes qui stockent les lettres de chaque bouton par ligne du clavier
         ArrayList<String> listeClavier1 = new ArrayList<>(Arrays.asList("a", "e", "i", "o", "u", "y"));
         ArrayList<String> listeClavier2 = new ArrayList<>(Arrays.asList("b", "c", "d", "f", "g", "h", "j", "k", "l", "m"));
         ArrayList<String> listeClavier3 = new ArrayList<>(Arrays.asList("n", "p", "q", "r", "s", "t", "v", "w", "x", "z"));
 
-        // initialisation du nombre de vies à 7
-        nbVies = 7;
-        // initialisation du mot à trouver
-        mot = new StringBuilder(dico.getMot());
-
 
         // initialisation du conteneur principal
         VBox vBox = new VBox();
+
+        // initialisation du conteneur affichant le nombre de victoires, de défaites et l'état du jeu
+        VBox affTop = new VBox();
+        affTop.setAlignment(Pos.CENTER);
+
+        // initialisation du label affichant le nombre de victoires, au départ à 0
+        victoire = new Label("Nombre de victoires : 0");
+        victoire.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 15;");
+
+        // initialisation du label affichant le nombre de défaites, au départ à 0
+        defaite = new Label("Nombre de défaites : 0");
+        defaite.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 15;");
+
+        // initialisation de etatDeJeu
+        etatDeJeu = new Label("Bonne chance!");
+        etatDeJeu.setStyle("-fx-font-weight: bold;" +
+                "-fx-font-size: 25;");
+
+        // ajout des noeuds précédents au conteneur affTop
+        affTop.getChildren().addAll(victoire, defaite, etatDeJeu);
+
 
         // initialisation du conteneur affichant le pendu, le mot et le nombre de vies
         VBox pendu = new VBox();
@@ -80,13 +110,8 @@ public class IHMPendu extends Application {
         motCache.setStyle("-fx-font-weight: bold;" +
                 "-fx-font-size: 30;");
 
-        // initialisation de etatDeJeu
-        etatDeJeu = new Label();
-        etatDeJeu.setStyle("-fx-font-weight: bold;" +
-                "-fx-font-size: 20;");
-
         // ajout des noeuds précédents au conteneur pendu
-        pendu.getChildren().addAll(imgPendu, vie, motCache, etatDeJeu);
+        pendu.getChildren().addAll(imgPendu, vie, motCache);
 
 
         // initialisation du conteneur affichant les boutons
@@ -150,14 +175,17 @@ public class IHMPendu extends Application {
 
 
         // ajout de pendu et boutons au conteneur principal
-        vBox.getChildren().addAll(pendu, boutons);
+        vBox.getChildren().addAll(affTop, pendu, boutons);
 
 
-        // la position des conteneurs pendu et boutons dépendra de la hauteur de la fenêtre
+        // la position des conteneurs affTop, pendu et boutons dépendra de la hauteur de la fenêtre
+        VBox.setVgrow(affTop, Priority.ALWAYS);
         VBox.setVgrow(pendu, Priority.ALWAYS);
         VBox.setVgrow(boutons, Priority.ALWAYS);
 
         // ajout de marges au différents noeuds
+        VBox.setMargin(affTop, new Insets(10.0, 0.0, 10.0, 0.0));
+        VBox.setMargin(etatDeJeu, new Insets(5.0, 0.0, 5.0, 0.0));
         VBox.setMargin(vie, new Insets(10.0, 0.0, 10.0, 0.0));
         VBox.setMargin(motCache, new Insets(5.0, 0.0, 10.0, 0.0));
         VBox.setMargin(rejouer, new Insets(15.0, 0.0, 10.0, 0.0));
@@ -246,19 +274,20 @@ public class IHMPendu extends Application {
             // on met à jour l'affichage
             motCache.setText(motRevele.toString());
 
-            // on affiche un message indiquant au joueur qu'il a gagné si l'affichage du mot est complet
-            if (!motRevele.toString().contains("*")) etatDeJeu.setText("Gagné!");
+            // on affiche un message indiquant au joueur qu'il a gagné si l'affichage du mot est complet puis on incrémente le compteur de victoires et on met à jour son affichage
+            if (!motRevele.toString().contains("*")) {
+                etatDeJeu.setText("Gagné!");
+                victoire.setText("Nombre de victoires : " + ++nbVictoires);
+            }
         }
 
         // si le bouton cliqué n'est pas celui d'une lettre présente dans le mot, alors le joueur perd une vie
         else {
-            // décrémentation du nombre de vies
-            --nbVies;
-
-            // si le nombre de vies atteint 0, alors un affichage spécial apparaît
-            if (nbVies == 0) {
+            // décrémentaion du nombre de vie, si le nombre de vies atteint 0, alors un affichage spécial apparaît puis on incrémente le compteur de défaite et on met à jour son affichage
+            if (--nbVies == 0) {
                 vie.setText("Perdu");
                 etatDeJeu.setText("Le mot était " + mot);
+                defaite.setText("Nombre de défaites : " + ++nbDefaites);
             }
 
             // sinon on met à jour l'affichage du nombre de vies
@@ -281,6 +310,7 @@ public class IHMPendu extends Application {
 
     // méthode gérant l'évènement provoqué par le bouton rejouer
     public void rejouerEvent() {
+        if (nbVies > 0 && motRevele.toString().contains("*")) defaite.setText("Nombre de défaites : " + ++nbDefaites);      // si le joueur abandonne la partie, alors on incrémente le compteur de défaite et on met à jour son affichage
         nbVies = 7;                             // le nombre de vies est réinitialisé
         vie.setText("Nombre de vies : 7");      // l'affichage du nombre de vies est réinitialisé
         imgPendu.setGraphic(new ImageView("exercice6/pendu7.png"));     // l'affichage du pendu est réinitialisé
