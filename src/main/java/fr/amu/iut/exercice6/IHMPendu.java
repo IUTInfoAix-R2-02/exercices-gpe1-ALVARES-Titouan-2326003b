@@ -277,6 +277,7 @@ public class IHMPendu extends Application {
             // on affiche un message indiquant au joueur qu'il a gagné si l'affichage du mot est complet puis on incrémente le compteur de victoires et on met à jour son affichage
             if (!motRevele.toString().contains("*")) {
                 etatDeJeu.setText("Gagné!");
+                imgPendu.setGraphic(new ImageView("exercice6/penduWin.png"));
                 victoire.setText("Nombre de victoires : " + ++nbVictoires);
             }
         }
