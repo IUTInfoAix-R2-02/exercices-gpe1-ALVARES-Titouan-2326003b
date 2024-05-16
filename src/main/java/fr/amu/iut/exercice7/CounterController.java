@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 
 public class CounterController implements Initializable {
     @FXML
-    Label counterLabel = new Label("0");
+    Label counterLabel;
     @FXML
     Button decrementButton = new Button();
     @FXML

@@ -11,7 +11,7 @@
     </padding>
     <center>
         <VBox alignment="CENTER" spacing="10">
-            <Label fx:id="counterLabel" textFill="#1e246b">
+            <Label fx:id="counterLabel" text="0" textFill="#1e246b">
                 <font>
                     <Font size="28" />
                 </font>
