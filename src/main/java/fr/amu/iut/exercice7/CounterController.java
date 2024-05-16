@@ -11,11 +11,11 @@ import java.util.ResourceBundle;
 
 public class CounterController implements Initializable {
     @FXML
-    Label counterLabel;
+    private Label counterLabel;
     @FXML
-    Button decrementButton = new Button();
+    private Button decrementButton = new Button();
     @FXML
-    Button incrementButton = new Button();
+    private Button incrementButton = new Button();
 
     int counter = 0;
 

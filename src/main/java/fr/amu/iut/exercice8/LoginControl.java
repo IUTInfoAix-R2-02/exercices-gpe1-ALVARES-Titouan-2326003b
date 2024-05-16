@@ -8,13 +8,9 @@ import javafx.scene.layout.GridPane;
 
 public class LoginControl extends GridPane {
     @FXML
-    TextField user;
+    private TextField user;
     @FXML
-    PasswordField pwd;
-    @FXML
-    Button ok;
-    @FXML
-    Button cancel;
+    private PasswordField pwd;
 
     @FXML
     private void okClicked() {
