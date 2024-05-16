@@ -1,7 +1,6 @@
 package fr.amu.iut.exercice8;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -21,7 +20,7 @@ public class LoginControl extends GridPane {
 
     @FXML
     private void cancelClicked() {
-        user.setText("");
-        pwd.setText("");
+        user.clear();
+        pwd.clear();
     }
 }
