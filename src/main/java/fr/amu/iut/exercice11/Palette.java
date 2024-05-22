@@ -1,6 +1,10 @@
-package fr.amu.iut.exercice1;
+package fr.amu.iut.exercice11;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,9 +37,15 @@ public class Palette extends Application {
 
     private Label texteDuBas;
 
+    private IntegerProperty nbFois;
+    private StringProperty message;
+    private StringProperty couleurPanneau;
+
 
     @Override
     public void start(Stage primaryStage) {
+        new Palette();
+
         root = new BorderPane();
 
         texteDuHaut = new Label();
@@ -59,6 +69,24 @@ public class Palette extends Application {
 
         /* VOTRE CODE ICI */
 
+        vert.setOnAction(event -> {
+            couleurPanneau.set("#008000");
+            nbFois.set(++nbVert);
+            message.set("Vert");
+        });
+        rouge.setOnAction(event -> {
+            couleurPanneau.set("#ff0000");
+            nbFois.set(++nbRouge);
+            message.set("Rouge");
+        });
+        bleu.setOnAction(event -> {
+            couleurPanneau.set("#0000ff");
+            nbFois.set(++nbBleu);
+            message.set("Bleu");
+        });
+
+        /* VOTRE CODE ICI */
+
         boutons.getChildren().addAll(vert, rouge, bleu);
 
         root.setCenter(panneau);
@@ -69,6 +97,20 @@ public class Palette extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public Palette() {
+        nbFois = new SimpleIntegerProperty();
+        message = new SimpleStringProperty();
+        couleurPanneau = new SimpleStringProperty("#000000");
+    }
+
+    private void createBindings() {
+        texteDuHaut.textProperty().bind(Bindings.concat(message, " choisi ", nbFois, " fois"));
+        panneau.styleProperty().bind(couleurPanneau);
+        BooleanProperty pasEncoreDeClic = new SimpleBooleanProperty();
+        
+        Bindings.when(pasEncoreDeClic);
     }
 }
 
