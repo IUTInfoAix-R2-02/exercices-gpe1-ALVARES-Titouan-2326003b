@@ -1,5 +1,6 @@
-package fr.amu.iut.exercice4;
+package fr.amu.iut.exercice14;
 
+import javafx.beans.Observable;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -14,15 +15,40 @@ public class MainPersonnes {
     private static IntegerProperty nbParisiens;
 
     private static IntegerBinding calculAgeMoyen;
-    private static IntegerBinding calculnbParisiens;
+    private static IntegerBinding calculNbParisiens;
 
     public static void main(String[] args) {
 
-        lesPersonnes = new SimpleListProperty<>(FXCollections.observableArrayList());
+        lesPersonnes = new SimpleListProperty<>(FXCollections.observableArrayList(personne -> new Observable[] {personne.ageProperty(), personne.villeDeNaissanceProperty()}));
         ageMoyen = new SimpleIntegerProperty(0);
+        nbParisiens = new SimpleIntegerProperty(0);
+
+        calculAgeMoyen = new IntegerBinding() {
+            { this.bind(lesPersonnes); }
+            @Override
+            protected int computeValue() {
+                if (lesPersonnes.isEmpty()) return 0;
+                int somme = 0;
+                for (Personne personne : lesPersonnes) somme += personne.getAge();
+                return somme/lesPersonnes.size();
+            }
+        };
+
+        calculNbParisiens = new IntegerBinding() {
+            { this.bind(lesPersonnes); }
+            @Override
+            protected int computeValue() {
+                int somme = 0;
+                for (Personne personne : lesPersonnes) if (personne.getVilleDeNaissance().equals("Paris")) ++somme;
+                return somme;
+            }
+        };
+
+        ageMoyen.bind(calculAgeMoyen);
+        nbParisiens.bind(calculNbParisiens);
 
         question1();
-//        question2();
+        question2();
     }
 
     public static void question1() {
@@ -45,7 +71,7 @@ public class MainPersonnes {
     public static void question2() {
         System.out.println("Il y a " + nbParisiens.getValue() + " parisiens");
         lesPersonnes.get(0).setVilleDeNaissance("Marseille");
-        System.out.println("Il y a " + nbParisiens.getValue() + " parisiens");
+        System.out.println("Il y a " + nbParisiens.getValue() + " parisien");
         lesPersonnes.get(1).setVilleDeNaissance("Montpellier");
         System.out.println("Il y a " + nbParisiens.getValue() + " parisien");
         for (Personne p : lesPersonnes)
